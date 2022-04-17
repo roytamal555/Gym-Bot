@@ -1,5 +1,6 @@
 import http.client
 import requests
+import datetime
 import \
     strike  # For time being, strike is a private library. Has to be downloaded into the local from
 # https://github.com/Strike-official/python-sdk
@@ -16,6 +17,15 @@ app.config["DEBUG"] = True
 baseAPI = "https://234b-103-211-132-49.in.ngrok.io/"
 url = "https://google-maps-search1.p.rapidapi.com/search"
 gym_data = {}
+week_day = {
+    0: "Monday",
+    1: "Tuesday",
+    2: "Wednesday",
+    3: "Thursday",
+    4: "Friday",
+    5: "Saturday",
+    6: "Sunday"
+}
 
 
 @app.route('/', methods=['POST'])
@@ -106,6 +116,15 @@ def gyms():
         ansObj.AddTextRowToAnswer(strike.H3, "No Website for this Gym I am afraid", "Red", False)
     ansObj.AddTextRowToAnswer(strike.H3, "Click on the below link to check the location on map", "blue", False)
     ansObj.AddTextRowToAnswer(strike.H4, gym_data[name]["place_link"], "green", False)
+
+    today_day = datetime.datetime.today().weekday()
+    day = week_day[today_day]
+    status = gym_data[name]["opening_hours"][day][0]
+    ansObj.AddTextRowToAnswer(strike.H4, "Opening Hours for today:", "blue", False)
+    if status == "Closed":
+        ansObj.AddTextRowToAnswer(strike.H4, status, "red", False)
+    else:
+        ansObj.AddTextRowToAnswer(strike.H4, status, "blue", False)
 
     ansObj.AnswerCard(). \
         SetHeaderToAnswer(1, strike.HALF_WIDTH). \
