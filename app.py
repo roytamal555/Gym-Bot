@@ -99,6 +99,11 @@ def gyms():
     ansObj.AddTextRowToAnswer(strike.H4, gym_data[name]["rating"], "green", False)
     ansObj.AddTextRowToAnswer(strike.H3, "Click the below link to check the review", "blue", False)
     ansObj.AddTextRowToAnswer(strike.H4, gym_data[name]["reviews_link"], "green", False)
+    ansObj.AddTextRowToAnswer(strike.H3, "Website:", "blue", False)
+    if "website" in gym_data[name]:
+        ansObj.AddTextRowToAnswer(strike.H4, gym_data[name]["website"], "green", False)
+    else:
+        ansObj.AddTextRowToAnswer(strike.H3, "No Website for this Gym I am afraid", "Red", False)
     ansObj.AddTextRowToAnswer(strike.H3, "Click on the below link to check the location on map", "blue", False)
     ansObj.AddTextRowToAnswer(strike.H4, gym_data[name]["place_link"], "green", False)
 
