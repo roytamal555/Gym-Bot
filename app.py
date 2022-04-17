@@ -1,7 +1,7 @@
 import http.client
 import requests
 import \
-    strike  # For timbeing, strike is a private library. Has to be downloaded into the local from
+    strike  # For time being, strike is a private library. Has to be downloaded into the local from
 # https://github.com/Strike-official/python-sdk
 import flask
 import requests
@@ -13,17 +13,17 @@ app.config["DEBUG"] = True
 
 # The public API link of the hosted server has to be added here.
 # Use ngrok to easily make your api public
-baseAPI = "https://6aad-103-211-132-49.in.ngrok.io/"
+baseAPI = "https://234b-103-211-132-49.in.ngrok.io/"
 url = "https://google-maps-search1.p.rapidapi.com/search"
-gymdata = {}
+gym_data = {}
 
 
 @app.route('/', methods=['POST'])
 def home():
-    ## Create a strike object
+    # Create a strike object
     strikeObj = strike.Create("getting_started", baseAPI + "respondBack")
 
-    # First Question: Whats your name?
+    # First Question: What's your name?
     print(request.get_json())
     # print(request.get_json())
     quesObj1 = strikeObj.Question("name"). \
@@ -31,7 +31,7 @@ def home():
         SetTextToQuestion("Hi! What is your name?")
     quesObj1.Answer("true").TextInput()
 
-    # Second Question: Whats your location?
+    # Second Question: What's your location?
     quesObj2 = strikeObj.Question("location"). \
         QuestionText(). \
         SetTextToQuestion("Hi! What is your current location?")
@@ -48,14 +48,14 @@ def respondBack():
     location_long = data["user_session_variables"]["location"]["longitude"]
     latitude = location_lat
     longitude = location_long
-    dir = str(latitude) + "," + str(longitude)
+    direction = str(latitude) + "," + str(longitude)
     strikeObj = strike.Create("getting_started", baseAPI + "GymInfo")
     payload = {
         "limit": 30,
         "language": "en",
         "region": "in",
-        "queries": ["Gym", "Fitness"],
-        "coordinates": dir
+        "queries": ["Gym"],
+        "coordinates": direction
     }
     headers = {
         "content-type": "application/json",
@@ -71,15 +71,10 @@ def respondBack():
     ansObj = question_card.Answer(True).AnswerCardArray(strike.VERTICAL_ORIENTATION)
 
     for gym in response["response"]["places"]:
-        gymdata[gym["name"]] = gym
+        gym_data[gym["name"]] = gym
         ansObj.AnswerCard(). \
             SetHeaderToAnswer(1, strike.HALF_WIDTH). \
             AddTextRowToAnswer(strike.H3, gym["name"], "black", False)
-        # if "phone_number" in gym:
-        #     ansObj.AddTextRowToAnswer(strike.H4, gym["phone_number"], "black", False)
-        # if "address" in gym:
-        #     ansObj.AddTextRowToAnswer(strike.H3, gym["address"], "black", False)
-
     return jsonify(strikeObj.Data())
 
 
@@ -96,13 +91,19 @@ def gyms():
 
     ansObj.AnswerCard(). \
         SetHeaderToAnswer(1, strike.HALF_WIDTH). \
-        AddGraphicRowToAnswer(strike.PICTURE_ROW, [gymdata[name]["photos_sample"][0]["large_photo_url"]], [""]). \
-        AddTextRowToAnswer(strike.H3, gymdata[name]["full_address"], "black", False)
-    if "phone_number" in gymdata[name]:
-        ansObj.AddTextRowToAnswer(strike.H4, gymdata[name]["phone_number"], "black", False)
+        AddGraphicRowToAnswer(strike.PICTURE_ROW, [gym_data[name]["photos_sample"][0]["large_photo_url"]], [""]). \
+        AddTextRowToAnswer(strike.H3, gym_data[name]["full_address"], "Purple", False)
+    if "phone_number" in gym_data[name]:
+        ansObj.AddTextRowToAnswer(strike.H4, gym_data[name]["phone_number"], "black", False)
+    ansObj.AddTextRowToAnswer(strike.H3, "Rating:", "blue", False)
+    ansObj.AddTextRowToAnswer(strike.H4, gym_data[name]["rating"], "green", False)
+    ansObj.AddTextRowToAnswer(strike.H3, "Click the below link to check the review", "blue", False)
+    ansObj.AddTextRowToAnswer(strike.H4, gym_data[name]["reviews_link"], "green", False)
+    ansObj.AddTextRowToAnswer(strike.H3, "Click on the below link to check the location on map", "blue", False)
+    ansObj.AddTextRowToAnswer(strike.H4, gym_data[name]["place_link"], "green", False)
 
-    ansObj.AnswerCard().\
-        SetHeaderToAnswer(1, strike.HALF_WIDTH).\
+    ansObj.AnswerCard(). \
+        SetHeaderToAnswer(1, strike.HALF_WIDTH). \
         AddTextRowToAnswer(strike.H4, "click here to go start over ^", "red", False)
     return jsonify(strikeObj.Data())
 
