@@ -69,7 +69,7 @@ def respondBack():
     }
     headers = {
         "content-type": "application/json",
-        "X-RapidAPI-Host": "google-maps-search1.p.rapidapi.com",
+        "X-RapidAPI-Host": "",
         "X-RapidAPI-Key": "70c2ab0b3amsh8aa4e736881836cp1d253ajsnef71490f71f6"
     }
     response = requests.request("POST", url, json=payload, headers=headers)
