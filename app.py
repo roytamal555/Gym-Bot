@@ -15,7 +15,7 @@ app.config["DEBUG"] = True
 # The public API link of the hosted server has to be added here.
 # Use ngrok to easily make your api public
 baseAPI = "https://234b-103-211-132-49.in.ngrok.io/"
-url = "https://google-maps-search1.p.rapidapi.com/search"
+url = ""
 gym_data = {}
 week_day = {
     0: "Monday",
